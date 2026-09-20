@@ -1,0 +1,155 @@
+{
+  "6": {
+    "subjects": [
+      "Hindi",
+      "Hindi Grammar",
+      "English",
+      "English Grammar",
+      "SST - History",
+      "SST - Geography",
+      "SST - Civics",
+      "Science",
+      "Maths",
+      "Sanskrit",
+      "Sanskrit Grammar"
+    ]
+  },
+  "7": {
+    "subjects": [
+      "Hindi",
+      "Hindi Grammar",
+      "English",
+      "English Grammar",
+      "SST - History",
+      "SST - Geography",
+      "SST - Civics",
+      "Science",
+      "Maths",
+      "Sanskrit",
+      "Sanskrit Grammar"
+    ]
+  },
+  "8": {
+    "subjects": [
+      "Hindi",
+      "Hindi Grammar",
+      "English",
+      "English Grammar",
+      "SST - History",
+      "SST - Geography",
+      "SST - Civics",
+      "Science",
+      "Maths",
+      "Sanskrit",
+      "Sanskrit Grammar"
+    ]
+  },
+  "9": {
+    "subjects": [
+      "Hindi",
+      "Hindi Grammar",
+      "English",
+      "English Grammar",
+      "SST - History",
+      "SST - Geography",
+      "SST - Political Science",
+      "SST - Economics",
+      "Science",
+      "Maths",
+      "Sanskrit",
+      "Sanskrit Grammar"
+    ]
+  },
+  "10": {
+    "subjects": [
+      "Hindi",
+      "Hindi Grammar",
+      "English",
+      "English Grammar",
+      "SST - History",
+      "SST - Geography",
+      "SST - Political Science",
+      "SST - Economics",
+      "Science",
+      "Maths",
+      "Sanskrit",
+      "Sanskrit Grammar"
+    ]
+  },
+  "11": {
+    "streams": {
+      "Science": [
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Mathematics",
+        "Computer Science",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ],
+      "Commerce": [
+        "Accountancy",
+        "Business Studies",
+        "Economics",
+        "Applied Mathematics",
+        "Computer Science",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ],
+      "Humanities": [
+        "History",
+        "Geography",
+        "Political Science",
+        "Economics",
+        "Sociology",
+        "Psychology",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ]
+    }
+  },
+  "12": {
+    "streams": {
+      "Science": [
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Mathematics",
+        "Computer Science",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ],
+      "Commerce": [
+        "Accountancy",
+        "Business Studies",
+        "Economics",
+        "Applied Mathematics",
+        "Computer Science",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ],
+      "Humanities": [
+        "History",
+        "Geography",
+        "Political Science",
+        "Economics",
+        "Sociology",
+        "Psychology",
+        "Hindi",
+        "Hindi Grammar",
+        "English",
+        "English Grammar"
+      ]
+    }
+  }
+}

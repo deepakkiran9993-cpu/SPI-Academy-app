@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPI Academy — Admin</title><style>
+body{font-family:system-ui,Arial;background:#f5f7fb;margin:0;color:#111827}.wrap{max-width:1100px;margin:auto;padding:18px}.card{background:white;border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #0001}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}input,select,textarea,button{padding:10px;border:1px solid #d1d5db;border-radius:9px;font-size:14px}button{background:#111827;color:#fff;cursor:pointer}.hide{display:none}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:8px;border-bottom:1px solid #eee;text-align:left}.muted{color:#6b7280}
+</style></head><body><div class="wrap">
+<div class="card"><h1>SPI Academy Bhopal — Admin Portal</h1><p class="muted">Secure Supabase Auth + central question bank + results</p></div>
+<div id="auth" class="card"><h2>Admin Login</h2><div class="grid"><input id="email" type="email" placeholder="Admin email"><input id="password" type="password" placeholder="Password"></div><button style="margin-top:10px" onclick="login()">Login</button><p id="msg" class="muted"></p></div>
+<div id="app" class="hide">
+<div class="card"><div style="display:flex;justify-content:space-between"><h2>Question Bank</h2><button onclick="logout()">Logout</button></div>
+<div class="grid"><input id="qClass" placeholder="Class 6-12"><input id="qStream" placeholder="Stream (optional)"><input id="qSubject" placeholder="Subject"><input id="qChapter" placeholder="Chapter"><select id="qTest"><option>A</option><option>B</option><option>C</option></select><input id="qMarks" value="1" type="number"></div>
+<textarea id="qEn" placeholder="Question English" style="width:100%;margin-top:10px"></textarea><textarea id="qHi" placeholder="Question Hindi" style="width:100%;margin-top:10px"></textarea>
+<div class="grid" style="margin-top:10px"><input id="o0e" placeholder="Option 1 EN"><input id="o0h" placeholder="विकल्प 1 HI"><input id="o1e" placeholder="Option 2 EN"><input id="o1h" placeholder="विकल्प 2 HI"><input id="o2e" placeholder="Option 3 EN"><input id="o2h" placeholder="विकल्प 3 HI"><input id="o3e" placeholder="Option 4 EN"><input id="o3h" placeholder="विकल्प 4 HI"><input id="ans" type="number" min="0" max="3" placeholder="Correct option: 0-3"></div>
+<button style="margin-top:10px" onclick="addQuestion()">Add Question</button> <button onclick="loadQuestions()">Refresh</button>
+<p id="qmsg" class="muted"></p></div>
+<div class="card"><h2>Results</h2><button onclick="loadResults()">Load Results</button> <button onclick="exportCSV()">Export CSV</button><div id="results"></div></div>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script>
+const configured=window.SPI_CONFIG&&!SPI_CONFIG.SUPABASE_URL.includes('YOUR-PROJECT'); const sb=configured?supabase.createClient(SPI_CONFIG.SUPABASE_URL,SPI_CONFIG.SUPABASE_ANON_KEY):null;let resultRows=[];
+async function login(){if(!sb){msg.textContent='Configure Supabase in shared/config.js first.';return}const {error}=await sb.auth.signInWithPassword({email:email.value,password:password.value});if(error){msg.textContent=error.message;return}auth.classList.add('hide');app.classList.remove('hide');loadResults()}
+async function logout(){if(sb)await sb.auth.signOut();location.reload()}
+async function addQuestion(){
+ if(!sb){qmsg.textContent='Supabase is not configured.';return}
+ const q={class_no:+qClass.value,stream:qStream.value||null,subject:qSubject.value,chapter:qChapter.value,test_code:qTest.value,question_en:qEn.value,question_hi:qHi.value,options_en:[o0e.value,o1e.value,o2e.value,o3e.value],options_hi:[o0h.value,o1h.value,o2h.value,o3h.value],answer_index:+ans.value,marks:+qMarks.value};
+ const {error}=await sb.from('questions').insert(q);qmsg.textContent=error?error.message:'Question added successfully.'; if(!error)loadQuestions()
+}
+async function loadQuestions(){if(!sb)return;const {data,error}=await sb.from('questions').select('id,class_no,stream,subject,chapter,test_code,question_en,active').order('created_at',{ascending:false}).limit(100);qmsg.textContent=error?error.message:`Showing ${data?.length||0} latest questions.`}
+async function loadResults(){if(!sb)return;const {data,error}=await sb.from('results').select('*').order('created_at',{ascending:false}).limit(500);resultRows=data||[];results.innerHTML=error?`<p>${error.message}</p>`:`<table class="table"><tr><th>Name</th><th>Class</th><th>Subject</th><th>Chapter</th><th>Score</th><th>%</th></tr>`+resultRows.map(r=>`<tr><td>${r.name||''}</td><td>${r.class_no||''}</td><td>${r.subject||''}</td><td>${r.chapter||''}</td><td>${r.score}/${r.total}</td><td>${r.percentage}%</td></tr>`).join('')+'</table>'}
+function exportCSV(){const h=['name','student_id','class_no','stream','subject','chapter','test_code','score','total','percentage'];const rows=[h,...resultRows.map(r=>h.map(k=>r[k]??''))];const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='spi_results.csv';a.click()}
+</script></body></html>

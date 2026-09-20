@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json">
+<title>SPI Academy — Student</title>
+<style>
+body{font-family:system-ui,Arial;margin:0;background:#f5f7fb;color:#111827}.wrap{max-width:900px;margin:auto;padding:18px}
+.card{background:#fff;border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #0000000d}
+h1{margin:0}.brand{display:flex;justify-content:space-between;gap:12px;align-items:center}
+select,input,button{padding:11px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
+button{background:#0f172a;color:#fff;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.q{padding:14px;border:1px solid #e5e7eb;border-radius:12px;margin:12px 0}.muted{color:#6b7280}.row{display:flex;gap:10px;flex-wrap:wrap}.hide{display:none}.pill{padding:5px 9px;background:#eef2ff;border-radius:99px}
+</style></head><body><div class="wrap">
+<div class="card brand"><div><h1>SPI Academy Bhopal</h1><div class="muted">Student Test Portal • English / हिन्दी</div></div>
+<div><button onclick="setLang('en')">English</button> <button onclick="setLang('hi')">हिन्दी</button></div></div>
+
+<div id="login" class="card">
+<h2>Student Login / विद्यार्थी लॉगिन</h2>
+<div class="grid"><input id="sid" placeholder="Student ID / छात्र ID"><input id="spass" type="password" placeholder="Password"></div>
+<div class="row" style="margin-top:10px"><button onclick="studentLogin()">Login</button><button onclick="guest()">Practice without login</button></div>
+<p id="loginMsg" class="muted"></p>
+</div>
+
+<div id="setup" class="card hide">
+<h2>Choose Test / टेस्ट चुनें</h2>
+<div class="grid">
+<select id="cls" onchange="loadSubjects()"></select><select id="stream" onchange="loadSubjects()"></select>
+<select id="sub" onchange="loadChapters()"></select><select id="chapter"></select><select id="testCode"><option>A</option><option>B</option><option>C</option></select>
+</div><div class="row" style="margin-top:12px"><button onclick="startTest()">Start Test</button><button onclick="logout()">Logout</button></div>
+<p id="bankMsg" class="muted"></p></div>
+
+<div id="test" class="card hide"><div class="row"><span class="pill" id="timer">10:00</span><span class="pill" id="progress"></span></div>
+<div id="questions"></div><button onclick="submitTest()">Submit Test / जमा करें</button></div>
+
+<div id="result" class="card hide"><h2>Result / परिणाम</h2><div id="resultText"></div>
+<div class="row"><button onclick="shareResult()">WhatsApp Share</button><button onclick="backToSetup()">Take Another Test</button></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+let lang='en', bank=[], current=[], user=null, timerId=null, seconds=600, lastResult=null;
+const hasConfig=()=>window.SPI_CONFIG && !window.SPI_CONFIG.SUPABASE_URL.includes("YOUR-PROJECT");
+const sb=hasConfig()?supabase.createClient(SPI_CONFIG.SUPABASE_URL,SPI_CONFIG.SUPABASE_ANON_KEY):null;
+const $=id=>document.getElementById(id);
+function setLang(x){lang=x; document.documentElement.lang=x; renderCurrentLabels()}
+function renderCurrentLabels(){ if($('setup').classList.contains('hide')) return; $('bankMsg').textContent=lang==='hi'?'टेस्ट चुनकर शुरू करें।':'Choose a test and start.'}
+function fillClasses(){ $('cls').innerHTML='<option value="">Class</option>'+Object.keys(curriculum).map(c=>`<option>${c}</option>`).join(''); }
+let curriculum={}; 
+fetch('curriculum.json').then(r=>r.json()).then(x=>{curriculum=x;fillClasses();});
+fetch('questions.json').then(r=>r.json()).then(x=>bank=x);
+function loadSubjects(){
+ const c=$('cls').value, data=curriculum[c]||{}, stream=$('stream'); stream.innerHTML='';
+ if(data.streams){stream.innerHTML='<option value="">Stream</option>'+Object.keys(data.streams).map(s=>`<option>${s}</option>`).join('');}
+ else stream.innerHTML='<option value="">General</option>';
+ const subjects=data.streams&&stream.value?data.streams[stream.value]:(data.subjects||[]);
+ $('sub').innerHTML='<option value="">Subject</option>'+subjects.map(s=>`<option>${s}</option>`).join(''); $('chapter').innerHTML='<option value="">Chapter</option>';
+}
+function loadChapters(){
+ const c=+$('cls').value, s=$('stream').value||null, sub=$('sub').value;
+ const rows=bank.filter(q=>q.class_no===c&&(q.stream||null)===s&&q.subject===sub);
+ const chapters=[...new Set(rows.map(q=>q.chapter))];
+ $('chapter').innerHTML='<option value="">Chapter</option>'+chapters.map(x=>`<option>${x}</option>`).join('');
+ $('bankMsg').textContent=chapters.length?`${chapters.length} chapter(s) available in current bank.`:'Add more questions from Admin portal.';
+}
+async function studentLogin(){
+ const id=$('sid').value.trim(), pass=$('spass').value;
+ if(!id||!pass){$('loginMsg').textContent='Enter Student ID and password.';return}
+ if(!sb){$('loginMsg').textContent='Backend not configured. Use Practice without login or configure Supabase.';return}
+ const {data,error}=await sb.rpc('student_login',{p_student_id:id,p_password:pass});
+ if(error||!data||!data.length){$('loginMsg').textContent='Invalid Student ID or password.';return}
+ user=data[0]; $('login').classList.add('hide'); $('setup').classList.remove('hide');
+}
+function guest(){user={student_id:'GUEST',name:'Guest Student',class_no:null};$('login').classList.add('hide');$('setup').classList.remove('hide')}
+function logout(){location.reload()}
+function startTest(){
+ const c=+$('cls').value,s=$('stream').value||null,sub=$('sub').value,ch=$('chapter').value,tc=$('testCode').value;
+ if(!c||!sub||!ch){alert('Select class, subject and chapter.');return}
+ current=bank.filter(q=>q.class_no===c&&(q.stream||null)===s&&q.subject===sub&&q.chapter===ch&&q.test_code===tc);
+ if(!current.length) current=bank.filter(q=>q.class_no===c&&(q.stream||null)===s&&q.subject===sub&&q.chapter===ch);
+ if(!current.length){alert('No questions in this test yet. Admin can add them.');return}
+ current=current.slice(0,30); seconds=Math.max(300,current.length*60); renderQuestions(); $('setup').classList.add('hide');$('test').classList.remove('hide'); tick();
+}
+function renderQuestions(){
+ $('questions').innerHTML=current.map((q,i)=>`<div class="q"><b>Q${i+1}. ${lang==='hi'?q.question_hi:q.question_en}</b>`+
+ (q.options_en||[]).map((o,j)=>`<label style="display:block;margin:8px 0"><input type="radio" name="q${i}" value="${j}"> ${lang==='hi'?q.options_hi[j]:o}</label>`).join('')+'</div>').join('');
+ $('progress').textContent=`${current.length} Questions`;
+}
+function tick(){clearInterval(timerId);updateTimer();timerId=setInterval(()=>{seconds--;updateTimer();if(seconds<=0){clearInterval(timerId);submitTest(true)}},1000)}
+function updateTimer(){$('timer').textContent=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`}
+async function submitTest(auto=false){
+ clearInterval(timerId);let score=0;current.forEach((q,i)=>{let a=document.querySelector(`input[name=q${i}]:checked`);if(a&&+a.value===q.answer_index)score+=q.marks||1});
+ const total=current.reduce((a,q)=>a+(q.marks||1),0), pct=Math.round(score*100/total);
+ lastResult={student_id:user.student_id,name:user.name,class_no:+$('cls').value,stream:$('stream').value||null,subject:$('sub').value,chapter:$('chapter').value,test_code:$('testCode').value,score,total,percentage:pct};
+ $('resultText').innerHTML=`<h3>${pct}%</h3><p>${score} / ${total} marks</p><p>${lastResult.name} • Class ${lastResult.class_no} • ${lastResult.subject}</p>`;
+ $('test').classList.add('hide');$('result').classList.remove('hide');
+ if(sb&&user.student_id!=='GUEST') await sb.from('results').insert(lastResult);
+ localStorage.setItem('spi_last_result',JSON.stringify(lastResult));
+}
+function shareResult(){const r=lastResult;const msg=`SPI Academy Result\\n${r.name}\\nClass ${r.class_no}\\n${r.subject} - ${r.chapter}\\nScore: ${r.score}/${r.total}\\nPercentage: ${r.percentage}%`;location.href='https://wa.me/?text='+encodeURIComponent(msg)}
+function backToSetup(){$('result').classList.add('hide');$('setup').classList.remove('hide')}
+</script></body></html>

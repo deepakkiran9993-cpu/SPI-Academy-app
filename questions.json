@@ -1,0 +1,140 @@
+[
+  {
+    "class_no": 10,
+    "stream": null,
+    "subject": "Science",
+    "chapter": "Life Processes",
+    "test_code": "A",
+    "question_en": "Which process releases energy from food in cells?",
+    "question_hi": "कोशिकाओं में भोजन से ऊर्जा किस प्रक्रिया द्वारा मुक्त होती है?",
+    "options_en": [
+      "Respiration",
+      "Photosynthesis",
+      "Transpiration",
+      "Excretion"
+    ],
+    "options_hi": [
+      "श्वसन",
+      "प्रकाश संश्लेषण",
+      "वाष्पोत्सर्जन",
+      "उत्सर्जन"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  },
+  {
+    "class_no": 10,
+    "stream": null,
+    "subject": "Science",
+    "chapter": "Acids, Bases and Salts",
+    "test_code": "A",
+    "question_en": "A solution with pH 2 is:",
+    "question_hi": "pH 2 वाला विलयन कैसा होता है?",
+    "options_en": [
+      "Strongly acidic",
+      "Neutral",
+      "Basic",
+      "Salt only"
+    ],
+    "options_hi": [
+      "प्रबल अम्लीय",
+      "उदासीन",
+      "क्षारीय",
+      "केवल लवण"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  },
+  {
+    "class_no": 10,
+    "stream": null,
+    "subject": "SST - Political Science",
+    "chapter": "Federalism",
+    "test_code": "A",
+    "question_en": "Which level of government is closest to the people?",
+    "question_hi": "सरकार का कौन-सा स्तर लोगों के सबसे निकट होता है?",
+    "options_en": [
+      "Local government",
+      "Union government",
+      "International government",
+      "None"
+    ],
+    "options_hi": [
+      "स्थानीय सरकार",
+      "केंद्रीय सरकार",
+      "अंतरराष्ट्रीय सरकार",
+      "कोई नहीं"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  },
+  {
+    "class_no": 9,
+    "stream": null,
+    "subject": "SST - History",
+    "chapter": "The French Revolution",
+    "test_code": "A",
+    "question_en": "In which year did the French Revolution begin?",
+    "question_hi": "फ्रांसीसी क्रांति किस वर्ष शुरू हुई?",
+    "options_en": [
+      "1789",
+      "1776",
+      "1815",
+      "1848"
+    ],
+    "options_hi": [
+      "1789",
+      "1776",
+      "1815",
+      "1848"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  },
+  {
+    "class_no": 8,
+    "stream": null,
+    "subject": "Science",
+    "chapter": "Microorganisms",
+    "test_code": "A",
+    "question_en": "Which microorganism is commonly used in bread making?",
+    "question_hi": "ब्रेड बनाने में सामान्यतः किस सूक्ष्मजीव का उपयोग होता है?",
+    "options_en": [
+      "Yeast",
+      "Algae",
+      "Virus",
+      "Protozoa"
+    ],
+    "options_hi": [
+      "यीस्ट",
+      "शैवाल",
+      "विषाणु",
+      "प्रोटोजोआ"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  },
+  {
+    "class_no": 12,
+    "stream": "Science",
+    "subject": "Physics",
+    "chapter": "Electric Charges and Fields",
+    "test_code": "A",
+    "question_en": "The SI unit of electric charge is:",
+    "question_hi": "विद्युत आवेश की SI इकाई है:",
+    "options_en": [
+      "Coulomb",
+      "Volt",
+      "Ohm",
+      "Watt"
+    ],
+    "options_hi": [
+      "कूलॉम",
+      "वोल्ट",
+      "ओम",
+      "वाट"
+    ],
+    "answer_index": 0,
+    "marks": 1
+  }
+]
